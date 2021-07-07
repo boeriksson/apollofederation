@@ -4,6 +4,7 @@ import {
     useQuery,
     gql
 } from '@apollo/client'
+import CustomerBody from './CustomerBody';
 
 const CustomerEntry = styled.div`
   margin: 5px;
@@ -35,6 +36,7 @@ const CUSTOMERS = gql`
 `
 
 const Main = () => {
+    const [bodyMap, setBodyMap] = useState({})
     const {loading, error, data} = useQuery(CUSTOMERS)
     if (error) {
         return <div>Error: {error}</div>
@@ -43,18 +45,20 @@ const Main = () => {
         return <div>Loading...</div>
     }
 
-    const handleClick = (id) => {
-        console.log(id)
-    }
+    const handleClick = (id) => setBodyMap({...bodyMap, ...{[id]: bodyMap[id] ? !bodyMap[id] : true}})
 
-    const customers = data.customers.map(({id, name}) => (
-        <CustomerEntry key={id} onClick={() => handleClick(id)}>
-            <CustomerTitle>
-                <div>{id}</div>
-                <div>{name}</div>
-            </CustomerTitle>
-        </CustomerEntry>
-    ))
+    const customers = data.customers.map(({id, name}) => {
+        const customerBody = bodyMap[id] && <CustomerBody customerId={id}/>
+        return (
+            <CustomerEntry key={id} onClick={() => handleClick(id)}>
+                <CustomerTitle>
+                    <div>{id}</div>
+                    <div>{name}</div>
+                </CustomerTitle>
+                {customerBody}
+            </CustomerEntry>
+        )
+    })
 
     return <>
         {customers}

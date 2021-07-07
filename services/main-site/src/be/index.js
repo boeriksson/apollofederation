@@ -3,6 +3,7 @@ const { ApolloServer, gql } = require('apollo-server')
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
 // your data.
+
 const typeDefs = gql`
   type Customer {
     id: ID!
@@ -74,7 +75,7 @@ const resolvers = {
         customers: () => customers,
         equipments: () => equipments,
         customerById: (parent, args, context, info) => customers.find(customer => customer.id === args.id),
-        equipmentsByCustomer: (parent, args, context, info) => equipments.map(equipment => equipment.customerId === args.customerId) //equipments.map(equipment => equipment.customerId === args.customerId)
+        equipmentsByCustomer: (parent, args, context, info) => equipments.map(equipment => equipment.customerId === args.customerId && equipment)
     }
 }
 
